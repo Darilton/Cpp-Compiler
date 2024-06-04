@@ -1,6 +1,16 @@
 #include <iostream>
+#include "lexical analyzer/lex.h"
 
 using namespace std;
+
+bool file_exists (string name) {
+    if (FILE *file = fopen(name.c_str(), "r")) {
+        fclose(file);
+        return true;
+    } else {
+        return false;
+    }   
+}
 
 int main(int argc, char *argv[]){
     //Return in no filename specified. 
@@ -10,6 +20,11 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
-    cout << "File: " << argv[1] <<endl;
+    if(file_exists(argv[1]))
+        cout << "File Exists" << endl;
+    else
+        cout << "Error: No such file: " << argv[1];
+
+    // scanToken();
     return 0;
 }
