@@ -1,3 +1,5 @@
+#ifndef TOKEN_H
+#define TOKEN_H
 #include <string>
 
 class token{
@@ -10,3 +12,4 @@ class token{
 
         std::string toString();
 };
+#endif

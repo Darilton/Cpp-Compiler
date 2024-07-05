@@ -1,6 +1,8 @@
 #include <string>
+#include <iostream>
 #include "token.h"
 
+using namespace std;
 
 token::token(int token_type, int line, std::string lexeme){
     this->lexeme = lexeme;
