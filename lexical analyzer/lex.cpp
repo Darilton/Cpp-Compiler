@@ -32,7 +32,7 @@ void lex::scanToken(){
     
     switch(ch){
         case '(': addToken("(", LEFT_PAREN); break;
-        case '\'': 
+        case '\'': scanChar(); break;
         case ')': addToken(")", RIGHT_PAREN); break;
         case '{': addToken("{", LEFT_BRACE); break;
         case '}': addToken("}", RIGHT_BRACE); break;
@@ -60,6 +60,7 @@ void lex::scanToken(){
                     }
                     advance();
                   } 
+                  advance();
                   addToken(CURRENT_LEXEME, STRING); break;
         case ' ': 
         case '\t': break;   
@@ -74,6 +75,22 @@ void lex::scanToken(){
                     addError(error);
                  }
     }
+}
+
+void lex::scanChar(){
+    advance();
+    if(peek() != '\''){
+        string error = "Malformed characther literal at line ";
+        error += to_string(line);
+        addError(error);
+        char ch = advance();
+        while(ch != '\'' && ch != EOF && ch != '\n')
+            ch = advance();
+        advance();
+        return;
+    }
+    advance();
+    addToken(CURRENT_LEXEME, CHAR);
 }
 
 void lex::scanId(){
