@@ -6,6 +6,7 @@
 #include "token/token.h"
 
 #define IS_UNDERSCORE(ch) (ch == '_')
+#define CURRENT_LEXEME source.substr(start, current - start)
 using namespace std;
 
 lex::lex(string source){
@@ -31,6 +32,7 @@ void lex::scanToken(){
     
     switch(ch){
         case '(': addToken("(", LEFT_PAREN); break;
+        case '\'': 
         case ')': addToken(")", RIGHT_PAREN); break;
         case '{': addToken("{", LEFT_BRACE); break;
         case '}': addToken("}", RIGHT_BRACE); break;
@@ -49,11 +51,12 @@ void lex::scanToken(){
         case '+': addToken("+", PLUS); break;
         case '*': addToken("*", TIMES); break;
         case '%': addToken("%", MOD); break;
+        case '"': while(advance() != '"'); addToken(CURRENT_LEXEME, STRING); break;
         case ' ': 
         case '\t': break;   
         case '\n': line++; break;
         default: if(isalpha(ch) || IS_UNDERSCORE(ch)) scanId();
-                 if(isdigit(ch)) scanNumber();
+                 else if(isdigit(ch)) scanNumber();
                  else {
                     string error = "Unexpected character \"";
                     error += ch;
@@ -68,14 +71,31 @@ void lex::scanId(){
     while(isalnum(peek()))
         advance();
     
-    addToken(source.substr(start, current - start), ID);
+    addToken(CURRENT_LEXEME, ID);
+}
+
+void lex::scanRealNumber(){
+    while(isdigit(peek()))
+        advance();
+
+    addToken(CURRENT_LEXEME, NUM);
 }
 
 void lex::scanNumber(){
-    while(isdigit(peek()))
-        advance();
+    while(true){
+        if(peek() == '.'){
+            advance();
+            scanRealNumber();
+            return;
+        }
+
+        if(isdigit(peek()))
+            advance();
+        else
+            break;
+    }
     
-    addToken(source.substr(start, current - start), NUM);
+    addToken(CURRENT_LEXEME, NUM);
 }
 
 char lex::advance(){
@@ -99,6 +119,6 @@ bool lex::match(char ch){
     if(isAtEnd()) return false;
     if(source[current] != ch) return false;
 
-    current++;
+    current += 1;
     return true;
 }

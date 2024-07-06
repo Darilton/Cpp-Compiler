@@ -31,6 +31,7 @@ using namespace std;
 #define ID 286                  // words
 #define RIGHT_BRACKET 287       //]
 #define LEFT_BRACKET 287        //[
+#define STRING 288        //[
 
 class lex{
     public:
@@ -43,9 +44,10 @@ class lex{
         int start = 0;
         int current = 0;
         int line = 1;
-        int col = 1;
         string source;
 
+        int getColNumber();
+        void scanRealNumber();
         void addError(std::string);
         void scanId();
         void scanNumber();

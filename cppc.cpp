@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
         cout << a.toString() << endl;
     }
 
-    cout << "Errors: " << endl;
+    if(scanner.errors.size() > 0) cout << "Errors: " << endl;
     for(auto& a: scanner.errors){
         cout << a << endl;
     }
