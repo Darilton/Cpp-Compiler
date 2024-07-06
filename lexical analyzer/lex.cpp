@@ -51,7 +51,16 @@ void lex::scanToken(){
         case '+': addToken("+", PLUS); break;
         case '*': addToken("*", TIMES); break;
         case '%': addToken("%", MOD); break;
-        case '"': while(advance() != '"'); addToken(CURRENT_LEXEME, STRING); break;
+        case '"': while(peek() != '"'){
+                    if(peek() == EOF){
+                        string error = "Unterminated string at line ";
+                        error += to_string(line);
+                        addError(error);
+                        return;
+                    }
+                    advance();
+                  } 
+                  addToken(CURRENT_LEXEME, STRING); break;
         case ' ': 
         case '\t': break;   
         case '\n': line++; break;
@@ -103,6 +112,9 @@ char lex::advance(){
 }
 
 char lex::peek(){
+    if(isAtEnd())
+        return EOF;
+
     return source[current];
 }
 
