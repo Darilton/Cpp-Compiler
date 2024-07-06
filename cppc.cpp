@@ -1,35 +1,11 @@
 #include <iostream>
 #include <string>
-#include <fstream>
 #include "lexical analyzer/lex.h"
 #include <list>
+#include "file/file.h"
 #include "lexical analyzer/token/token.h"
 
 using namespace std;
-
-bool file_exists (string name) {
-    if (FILE *file = fopen(name.c_str(), "r")) {
-        fclose(file);
-        return true;
-    }
-
-    return false;
-}
-
-string readFile(string fileName){
-    string content;
-    ifstream file(fileName);
-    
-    if (file.is_open()) {
-        char ch;
-        while (file.get(ch)) {
-            content += ch;
-        }
-        file.close();
-        return content;
-    }
-    return "";
-}
 
 int main(int argc, char *argv[]){
     //Return if no filename specified. 

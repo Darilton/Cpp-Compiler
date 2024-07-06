@@ -2,6 +2,7 @@
 #define LEX_H
 
 #include <string>
+#include <map>
 #include <list>
 #include "token/token.h"
 
@@ -33,10 +34,23 @@ using namespace std;
 #define LEFT_BRACKET 287        //[
 #define STRING 288              //String literals
 #define CHAR 289                // Charachters
+#define IF 290                  // if
+#define ELSE 291                // else
+#define WHILE 292               // while
+#define FOR 293                 // for
+#define INT 294                 // int
+#define DOUBLE 295              // double
+#define SHORT 296               // short
+#define SWITCH 297              // switch
+#define CASE 298                // case
+#define RETURN 299              // return
+
+
 
 class lex{
     public:
        lex(std::string source);
+       map<string, int> keywords;
        list<token> scanTokens();
        list<string> errors;
        

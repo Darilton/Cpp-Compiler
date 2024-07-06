@@ -3,13 +3,17 @@
 #include <cctype>
 #include <list>
 #include "lex.h"
+#include "../file/file.h"
 #include "token/token.h"
 
 #define IS_UNDERSCORE(ch) (ch == '_')
 #define CURRENT_LEXEME source.substr(start, current - start)
-using namespace std;
 
 lex::lex(string source){
+    int i = CHAR;
+    for(string a: getFileLines("docs/keywords.txt")){
+        this->keywords[a] = i++;
+    }
     this->source = source;
 }
 
@@ -96,8 +100,13 @@ void lex::scanChar(){
 void lex::scanId(){
     while(isalnum(peek()))
         advance();
-    
-    addToken(CURRENT_LEXEME, ID);
+
+    map<string,int>::iterator it = this->keywords.find(CURRENT_LEXEME);
+    if(it != this->keywords.end())
+        addToken(CURRENT_LEXEME, this->keywords[CURRENT_LEXEME]);
+    else
+        addToken(CURRENT_LEXEME, ID);
+
 }
 
 void lex::scanRealNumber(){
