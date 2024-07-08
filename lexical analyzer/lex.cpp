@@ -36,8 +36,11 @@ void lex::scanToken(){
     
     switch(ch){
         case '(': addToken("(", LEFT_PAREN); break;
+        case '/': match('/')? onelineComment() : match('*')? multilineComment() : addToken("/", DIV); 
+                  break;
         case '\'': scanChar(); break;
         case ')': addToken(")", RIGHT_PAREN); break;
+        case '|': match('|')? addToken("||", OR) : addToken("|", BITOR);
         case '{': addToken("{", LEFT_BRACE); break;
         case '}': addToken("}", RIGHT_BRACE); break;
         case '[': addToken("[", LEFT_BRACKET); break;
@@ -47,13 +50,14 @@ void lex::scanToken(){
         case ',': addToken(",", COMMA); break;
         case '.': addToken(".", DOT); break;
         case '#': addToken("#", HASH); break;
-        case '=': addToken("=", EQUALS); break;
+        case '=': match('=')? addToken("==", EQUALS): addToken("=", ASSIGN); break;
         case '>': match('=') ? addToken(">=", GREATER_EQUALS) : addToken(">", GREATER); break;
         case '<': addToken("<", LESS); break;
         case '!': addToken("!", BANG); break;
         case '-': addToken("-", MINUS); break;
         case '+': addToken("+", PLUS); break;
         case '*': addToken("*", TIMES); break;
+        case '&': addToken("&", AMPER); break;
         case '%': addToken("%", MOD); break;
         case '"': while(peek() != '"'){
                     if(peek() == EOF){
@@ -95,6 +99,28 @@ void lex::scanChar(){
     }
     advance();
     addToken(CURRENT_LEXEME, CHAR);
+}
+
+void lex::onelineComment(){
+    while(peek() != '\n' && peek() != '\0')
+        advance();
+}
+
+void lex::multilineComment(){
+    while(peek() != '\0' && peek() != '*' && peekTwice() != EOF && peekTwice() != '/'){
+        if(advance() == '\n')
+            line++;
+    }
+
+    if(peek() == '\0' || peekTwice() == EOF){
+        string error = "Non Terminated multiline comment at line ";
+        error += to_string(line);
+        addError(error);
+        return;
+    }
+
+    advance();
+    advance();
 }
 
 void lex::scanId(){
@@ -142,6 +168,13 @@ char lex::peek(){
         return EOF;
 
     return source[current];
+}
+
+char lex::peekTwice(){
+    if(isAtEnd())
+        return EOF;
+
+    return source[current + 1];
 }
 
 void lex::addError(string error){

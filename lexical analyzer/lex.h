@@ -17,7 +17,7 @@ using namespace std;
 #define COLON 272               // :
 #define DOT 272                 // .
 #define HASH 273                // #
-#define EQUALS 274              // =
+#define EQUALS 274              // ==
 #define GREATER 275             // >
 #define LESS 276                // <
 #define GREATER_EQUALS 277      // >=
@@ -129,6 +129,8 @@ using namespace std;
 #define WCHAR_T 382
 #define XOR 383
 #define XOR_EQ 384
+#define AMPER 385                   // &
+#define ASSIGN 386                  // =
 
 
 
@@ -151,6 +153,9 @@ class lex{
         void scanRealNumber();
         void addError(std::string);
         void scanId();
+        void onelineComment();
+        void multilineComment();
+        char peekTwice();
         void scanNumber();
         void scanToken();
         bool isAtEnd();
